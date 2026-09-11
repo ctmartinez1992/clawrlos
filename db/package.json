@@ -1,0 +1,8 @@
+{
+  "name": "nanobot-links-migrations",
+  "private": true,
+  "dependencies": {
+    "node-pg-migrate": "^7.6.1",
+    "pg": "^8.13.1"
+  }
+}

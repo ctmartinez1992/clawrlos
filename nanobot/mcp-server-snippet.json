@@ -1,0 +1,15 @@
+{
+  "tools": {
+    "mcpServers": {
+      "postgres": {
+        "command": "npx",
+        "args": ["-y", "@microsoft/postgres-mcp", "run"],
+        "env": {
+          "POSTGRES_MCP_CONNECTION_STRING": "${POSTGRES_LINKS_DSN}",
+          "POSTGRES_MCP_DISABLE_KEYRING": "1",
+          "POSTGRES_MCP_PROFILE_NAME": "links"
+        }
+      }
+    }
+  }
+}
