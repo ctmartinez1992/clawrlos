@@ -24,4 +24,3 @@ Follow `dokku/DEPLOY.md` end to end. In short:
 7. Verify: send a link + category in Discord, then check it landed with `dokku postgres:connect nanobot-links -- -c 'SELECT * FROM links;'`.
 
 To add a schema change later: `cd db && npx node-pg-migrate create <name>`, commit the new file, then repeat steps 1 and 4 on the next deploy.
-# Clawrlos
