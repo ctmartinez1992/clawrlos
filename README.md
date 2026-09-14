@@ -7,6 +7,7 @@ nanobot itself stays a native/systemd process — it's not deployed via Dokku. D
 ## What's here
 
 - `dokku/DEPLOY.md` — provisioning Postgres via Dokku's `postgres` plugin and exposing it to localhost.
+- `dokku/DB-VIEWER.md` — optional: deploying [pgweb](https://github.com/sosedoff/pgweb) as its own Dokku app for browsing the tables in a read-only web UI (SSH-tunnel access only, never public).
 - `db/` — a small [`node-pg-migrate`](https://github.com/salsita/node-pg-migrate) project managing the schema (see `db/README.md`); `db/migrations/` holds the migration files, starting with the `links` table.
 - `nanobot/mcp-server-snippet.json` — the `tools.mcpServers` block to merge into `~/.nanobot/config.json`.
 - `nanobot/AGENTS-links-section.md` — instructions to append to the agent workspace's `AGENTS.md` so it knows how to use the tool.
@@ -25,3 +26,5 @@ Beyond Node.js (used for `npx`), the agent's photo/invoice handling in `nanobot/
 3. Verify: send a link + category in Discord, then check it landed with `psql "<dsn>" -c "SELECT * FROM links;"`.
 
 To add a schema change later: `cd db && npx node-pg-migrate create <name>`, commit the new file, then apply it per `db/README.md`.
+
+Optional: follow `dokku/DB-VIEWER.md` any time after step 1 to deploy a browsable table viewer instead of using `psql` directly.
