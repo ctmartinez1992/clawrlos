@@ -12,6 +12,12 @@ nanobot itself stays a native/systemd process — it's not deployed via Dokku. D
 - `nanobot/AGENTS-links-section.md` — instructions to append to the agent workspace's `AGENTS.md` so it knows how to use the tool.
 - `nanobot/DEPLOY.md` — wiring the above into the existing native nanobot install.
 
+## Host dependencies
+
+Beyond Node.js (used for `npx`), the agent's photo/invoice handling in `nanobot/AGENTS-links-section.md` shells out to two more tools that must be installed on the host:
+- `imagemagick` (for `convert`, used to compress saved photos) — `sudo apt install -y imagemagick`
+- `tesseract-ocr` (for `tesseract`, used to extract text from invoice/receipt photos) — `sudo apt install -y tesseract-ocr`
+
 ## Deploy order
 
 1. Provision Postgres: follow `dokku/DEPLOY.md` (create the service, expose it to localhost, grab the DSN).

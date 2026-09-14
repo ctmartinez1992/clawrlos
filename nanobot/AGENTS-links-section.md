@@ -38,17 +38,39 @@ When the user says a previously saved link shouldn't be recommended anymore (e.g
 
 ## Recording a visit to a link
 
-Each link can have multiple visits logged against it (a `link_visits` table, one row per visit, linked via `link_id`). When the user says they (re)visited a saved link — with or without a rating/notes for that specific visit:
+Each link can have multiple visits logged against it (a `link_visits` table, one row per visit, linked via `link_id`), and each visit can in turn have any number of photos (a `visit_photos` table, one row per photo, linked via `visit_id`). When the user says they (re)visited a saved link — with or without a rating/notes/photos for that specific visit:
 
 1. Find the link with `postgres_mcp_query` (match on `url` or `name` — ask the user to clarify if more than one plausible match comes back).
 2. Rating for this visit is optional (0-10 integer) — only set it if the user gives one for this visit; don't invent one. This feeds into the link's overall `rating`, which the database automatically recalculates as the average of all rated visits every time one is added, changed, or removed — never set `links.rating` yourself.
 3. Notes for this visit are optional — only include if the user gives context worth capturing.
 4. If the user gives a specific date/time for the visit, use it for `visited_at`; otherwise omit that column so it defaults to the current time.
-5. Call `postgres_mcp_modify` to run:
+5. Photos are entirely optional, and there can be any number of them (e.g. several photos of what was eaten). For each photo attachment on the message:
+   a. Download it (using your web-fetch tool, from its Discord attachment URL) to a temporary location.
+   b. If the user says it's an invoice/receipt (or it's otherwise obvious from context that it is one), run OCR on the **original, uncompressed** download before touching it further:
+      ```bash
+      tesseract <downloaded-file> stdout
+      ```
+      (`tesseract-ocr` must be installed on the host). Parse the raw text yourself into line items (product name + price per line) — OCR output is noisy, so skip any line you can't confidently parse rather than guessing, and never invent an item or a price. Hang onto the extracted items; they get inserted after the visit row exists (step 7).
+   c. Compress the photo with your shell tool before keeping it — e.g.:
+      ```bash
+      convert <downloaded-file> -resize '1600x1600>' -strip -quality 82 <final-path>
+      ```
+      This caps the largest dimension at 1600px and re-encodes at quality 82, cutting file size substantially with little visible quality loss (`imagemagick` must be installed on the host for `convert` to be available). Do this regardless of whether the photo was an invoice — the invoice photo is still kept like any other. Delete the temporary uncompressed download afterward.
+   d. Save the final compressed file under `~/.nanobot/workspace/photos/` (create the directory first if it doesn't exist yet) with a unique filename — e.g. a timestamp plus the original file extension.
+   Skip this whole step if the message has no photos. Only file paths are stored in the database — never the image bytes themselves.
+6. Call `postgres_mcp_modify` to run the visit insert with `RETURNING id` so you get the new visit's id back:
    ```sql
-   INSERT INTO link_visits (link_id, rating, notes) VALUES (<id>, <rating or NULL>, '<notes or NULL>');
+   INSERT INTO link_visits (link_id, rating, notes) VALUES (<id>, <rating or NULL>, '<notes or NULL>') RETURNING id;
    ```
    (add `visited_at` to the column list and values only when the user specified a date/time)
-6. Confirm in Discord which link the visit was logged against.
+7. If there were any photos, insert one row per photo into `visit_photos` using the visit id from the previous step (a single multi-row `INSERT` is fine when there are several):
+   ```sql
+   INSERT INTO visit_photos (visit_id, photo_path) VALUES (<visit_id>, '<photo path>'), (<visit_id>, '<photo path 2>');
+   ```
+8. If any invoice items were extracted in step 5b, insert one row per item into `invoice_items` using the same visit id (again, a single multi-row `INSERT` when there are several):
+   ```sql
+   INSERT INTO invoice_items (visit_id, product_name, price) VALUES (<visit_id>, '<product name>', <price>), (<visit_id>, '<product name 2>', <price 2>);
+   ```
+9. Confirm in Discord which link the visit was logged against, how many photos were saved, and how many invoice items were extracted (if any) — mentioning the extracted items lets the user catch obviously-wrong OCR and correct it in a follow-up message.
 
 Don't run destructive statements (`DELETE`, `DROP`, etc.) against this database unless the user explicitly asks for it.
