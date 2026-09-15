@@ -63,14 +63,23 @@ Each link can have multiple visits logged against it (a `link_visits` table, one
    INSERT INTO link_visits (link_id, rating, notes) VALUES (<id>, <rating or NULL>, '<notes or NULL>') RETURNING id;
    ```
    (add `visited_at` to the column list and values only when the user specified a date/time)
-7. If there were any photos, insert one row per photo into `visit_photos` using the visit id from the previous step (a single multi-row `INSERT` is fine when there are several):
+7. If there were any photos, insert one row per photo into `visit_photos` using the visit id from the previous step (a single multi-row `INSERT` is fine when there are several), and use `RETURNING id, photo_path` so you know which photo got which id:
    ```sql
-   INSERT INTO visit_photos (visit_id, photo_path) VALUES (<visit_id>, '<photo path>'), (<visit_id>, '<photo path 2>');
+   INSERT INTO visit_photos (visit_id, photo_path) VALUES (<visit_id>, '<photo path>'), (<visit_id>, '<photo path 2>') RETURNING id, photo_path;
    ```
-8. If any invoice items were extracted in step 5b, insert one row per item into `invoice_items` using the same visit id (again, a single multi-row `INSERT` when there are several):
+   Match each returned `id` back to its photo by `photo_path` (paths are unique — they're timestamp-based filenames).
+8. If any invoice items were extracted in step 5b, insert one row per item into `invoice_items`, using the specific photo's id (from step 7) that the items came from — not the visit id (a single multi-row `INSERT` when there are several items from the same photo; if more than one photo in this visit was an invoice, each one's items use that photo's own id):
    ```sql
-   INSERT INTO invoice_items (visit_id, product_name, price) VALUES (<visit_id>, '<product name>', <price>), (<visit_id>, '<product name 2>', <price 2>);
+   INSERT INTO invoice_items (photo_id, product_name, price) VALUES (<photo_id>, '<product name>', <price>), (<photo_id>, '<product name 2>', <price 2>);
    ```
 9. Confirm in Discord which link the visit was logged against, how many photos were saved, and how many invoice items were extracted (if any) — mentioning the extracted items lets the user catch obviously-wrong OCR and correct it in a follow-up message.
 
 Don't run destructive statements (`DELETE`, `DROP`, etc.) against this database unless the user explicitly asks for it.
+
+## Showing a visit photo in Discord
+
+When the user asks to see a photo (e.g. "show me the photo from that visit", "what did the receipt look like"):
+
+1. Find the relevant photo(s) with `postgres_mcp_query`, joining `visit_photos` → `link_visits` → `links` as needed to resolve whatever they referenced (a link name/url, "my last visit", a date, "the receipt", etc.). If several photos match and it's genuinely unclear which one(s) they want, ask — but if there are only a few, just send them all rather than making them pick.
+2. For each photo to show, call the built-in `message` tool (not a `postgres` MCP tool) with `media: ["<photo_path>"]` and brief `content` text saying what/when it's from. Leave `channel`/`chat_id` unset so it replies into the current conversation.
+3. Only local file paths work as attachments on Discord (not URLs), and there's a hard 20MB-per-file cap — both are already satisfied here, since photos are saved locally under `~/.nanobot/workspace/photos/` and compressed on save (step 5c above).
