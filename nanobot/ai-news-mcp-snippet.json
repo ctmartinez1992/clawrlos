@@ -1,0 +1,14 @@
+{
+  "tools": {
+    "mcpServers": {
+      "ai-news": {
+        "command": "/root/clawrlos-ops-mcp/.venv/bin/clawrlos-ops-mcp",
+        "args": [],
+        "env": {
+          "SUPABASE_URL": "${SUPABASE_URL}",
+          "SUPABASE_KEY": "${SUPABASE_KEY}"
+        }
+      }
+    }
+  }
+}
