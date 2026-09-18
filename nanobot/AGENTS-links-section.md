@@ -44,19 +44,13 @@ Each link can have multiple visits logged against it (a `link_visits` table, one
 2. Rating for this visit is optional (0-10 integer) — only set it if the user gives one for this visit; don't invent one. This feeds into the link's overall `rating`, which the database automatically recalculates as the average of all rated visits every time one is added, changed, or removed — never set `links.rating` yourself.
 3. Notes for this visit are optional — only include if the user gives context worth capturing.
 4. If the user gives a specific date/time for the visit, use it for `visited_at`; otherwise omit that column so it defaults to the current time.
-5. Photos are entirely optional, and there can be any number of them (e.g. several photos of what was eaten). For each photo attachment on the message:
-   a. Download it (using your web-fetch tool, from its Discord attachment URL) to a temporary location.
-   b. If the user says it's an invoice/receipt (or it's otherwise obvious from context that it is one), run OCR on the **original, uncompressed** download before touching it further:
+5. Photos are entirely optional, and there can be any number of them (e.g. several photos of what was eaten). nanobot already saves each incoming Discord attachment locally under `/root/.nanobot/media/discord/` — you don't need to download, copy, rename, or compress anything yourself. For each photo attachment on the message:
+   a. Use its existing local path under `/root/.nanobot/media/discord/` as-is; that's the exact value you'll store as `photo_path` in step 7.
+   b. If the user says it's an invoice/receipt (or it's otherwise obvious from context that it is one), run OCR on it:
       ```bash
-      tesseract <downloaded-file> stdout
+      tesseract <photo_path> stdout
       ```
       (`tesseract-ocr` must be installed on the host). Parse the raw text yourself into line items (product name + price per line) — OCR output is noisy, so skip any line you can't confidently parse rather than guessing, and never invent an item or a price. Hang onto the extracted items; they get inserted after the visit row exists (step 7).
-   c. Compress the photo with your shell tool before keeping it — e.g.:
-      ```bash
-      convert <downloaded-file> -resize '1600x1600>' -strip -quality 82 <final-path>
-      ```
-      This caps the largest dimension at 1600px and re-encodes at quality 82, cutting file size substantially with little visible quality loss (`imagemagick` must be installed on the host for `convert` to be available). Do this regardless of whether the photo was an invoice — the invoice photo is still kept like any other. Delete the temporary uncompressed download afterward.
-   d. Save the final compressed file under `~/.nanobot/workspace/photos/` (create the directory first if it doesn't exist yet) with a unique filename — e.g. a timestamp plus the original file extension.
    Skip this whole step if the message has no photos. Only file paths are stored in the database — never the image bytes themselves.
 6. Call `postgres_mcp_modify` to run the visit insert with `RETURNING id` so you get the new visit's id back:
    ```sql
@@ -67,7 +61,7 @@ Each link can have multiple visits logged against it (a `link_visits` table, one
    ```sql
    INSERT INTO visit_photos (visit_id, photo_path) VALUES (<visit_id>, '<photo path>'), (<visit_id>, '<photo path 2>') RETURNING id, photo_path;
    ```
-   Match each returned `id` back to its photo by `photo_path` (paths are unique — they're timestamp-based filenames).
+   Match each returned `id` back to its photo by `photo_path` (paths are unique — each attachment gets its own file under `/root/.nanobot/media/discord/`).
 8. If any invoice items were extracted in step 5b, insert one row per item into `invoice_items`, using the specific photo's id (from step 7) that the items came from — not the visit id (a single multi-row `INSERT` when there are several items from the same photo; if more than one photo in this visit was an invoice, each one's items use that photo's own id):
    ```sql
    INSERT INTO invoice_items (photo_id, product_name, price) VALUES (<photo_id>, '<product name>', <price>), (<photo_id>, '<product name 2>', <price 2>);
@@ -82,4 +76,4 @@ When the user asks to see a photo (e.g. "show me the photo from that visit", "wh
 
 1. Find the relevant photo(s) with `postgres_mcp_query`, joining `visit_photos` → `link_visits` → `links` as needed to resolve whatever they referenced (a link name/url, "my last visit", a date, "the receipt", etc.). If several photos match and it's genuinely unclear which one(s) they want, ask — but if there are only a few, just send them all rather than making them pick.
 2. For each photo to show, call the built-in `message` tool (not a `postgres` MCP tool) with `media: ["<photo_path>"]` and brief `content` text saying what/when it's from. Leave `channel`/`chat_id` unset so it replies into the current conversation.
-3. Only local file paths work as attachments on Discord (not URLs), and there's a hard 20MB-per-file cap — both are already satisfied here, since photos are saved locally under `~/.nanobot/workspace/photos/` and compressed on save (step 5c above).
+3. Only local file paths work as attachments on Discord (not URLs), and there's a hard 20MB-per-file cap. The local-path requirement is satisfied since photos are stored at whatever path nanobot saved them to under `/root/.nanobot/media/discord/` — the original file, untouched.

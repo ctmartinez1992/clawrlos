@@ -1,0 +1,152 @@
+{
+  ".claude/skills/verify-repo-safety/check.sh": {
+    "mtime": 1789490557.5882332,
+    "seen": 1789664719.75153,
+    "ast_hash": "f1aafbed507cea1b47dd6bbbc9743959",
+    "semantic_hash": "f1aafbed507cea1b47dd6bbbc9743959"
+  },
+  "db/migrations/1757606400000_create-links.js": {
+    "mtime": 1789134296.241635,
+    "seen": 1789664719.751532,
+    "ast_hash": "1808725aef8851a08f6c4d294fe14df0",
+    "semantic_hash": "1808725aef8851a08f6c4d294fe14df0"
+  },
+  "db/migrations/1757700000000_add-name-to-links.js": {
+    "mtime": 1789209867.529924,
+    "seen": 1789664719.751534,
+    "ast_hash": "2a4c3495ae6bd4f43e83196921953b22",
+    "semantic_hash": "2a4c3495ae6bd4f43e83196921953b22"
+  },
+  "db/migrations/1757800000000_add-rating-to-links.js": {
+    "mtime": 1789210247.169663,
+    "seen": 1789664719.7515352,
+    "ast_hash": "bb3183db6fc197f8b13d3f5bc2ff9d3c",
+    "semantic_hash": "bb3183db6fc197f8b13d3f5bc2ff9d3c"
+  },
+  "db/migrations/1757900000000_add-no-longer-recommend-to-links.js": {
+    "mtime": 1789379634.6497116,
+    "seen": 1789664719.7515352,
+    "ast_hash": "5c4841cca429167b8cc3913a79bdc73b",
+    "semantic_hash": "5c4841cca429167b8cc3913a79bdc73b"
+  },
+  "db/migrations/1758000000000_create-link-visits.js": {
+    "mtime": 1789490580.0016787,
+    "seen": 1789664719.7515361,
+    "ast_hash": "adfe898568f080df72d76664818b2a4c",
+    "semantic_hash": "adfe898568f080df72d76664818b2a4c"
+  },
+  "db/migrations/1758100000000_derive-link-rating-from-visits.js": {
+    "mtime": 1789380774.7610147,
+    "seen": 1789664719.7515368,
+    "ast_hash": "da4ba6209967251d1c07b01aa6789f79",
+    "semantic_hash": "da4ba6209967251d1c07b01aa6789f79"
+  },
+  "db/migrations/1758200000000_add-photo-path-to-link-visits.js": {
+    "mtime": 1789384516.284644,
+    "seen": 1789664719.751538,
+    "ast_hash": "f15e1d2ce87ed05e6d74b708d913812e",
+    "semantic_hash": "f15e1d2ce87ed05e6d74b708d913812e"
+  },
+  "db/migrations/1758300000000_create-visit-photos.js": {
+    "mtime": 1789384594.3403614,
+    "seen": 1789664719.751538,
+    "ast_hash": "947e009fdbcaf9bb8f34544c6197ea32",
+    "semantic_hash": "947e009fdbcaf9bb8f34544c6197ea32"
+  },
+  "db/migrations/1758400000000_create-invoice-items.js": {
+    "mtime": 1789385185.8634062,
+    "seen": 1789664719.751539,
+    "ast_hash": "5e989e2f8960f7a3bc7e2fcb8433dbf2",
+    "semantic_hash": "5e989e2f8960f7a3bc7e2fcb8433dbf2"
+  },
+  "db/migrations/1758500000000_link-invoice-items-to-photo.js": {
+    "mtime": 1789461475.604325,
+    "seen": 1789664719.75154,
+    "ast_hash": "8b8c548a7812355ffbe7282f1406540c",
+    "semantic_hash": "8b8c548a7812355ffbe7282f1406540c"
+  },
+  "db/package.json": {
+    "mtime": 1789134294.6217234,
+    "seen": 1789664719.751541,
+    "ast_hash": "cba5a4830f9b2fb72df777e04a049678",
+    "semantic_hash": "cba5a4830f9b2fb72df777e04a049678"
+  },
+  "nanobot/ai-news-mcp-snippet.json": {
+    "mtime": 1789639555.555337,
+    "seen": 1789664719.751541,
+    "ast_hash": "d98c6389d5f641c181ff756055378259",
+    "semantic_hash": "d98c6389d5f641c181ff756055378259"
+  },
+  "nanobot/mcp-server-snippet.json": {
+    "mtime": 1789136734.3493874,
+    "seen": 1789664719.751542,
+    "ast_hash": "a80047eb89571676d500f5795716004e",
+    "semantic_hash": "a80047eb89571676d500f5795716004e"
+  },
+  ".claude/skills/verify-repo-safety/SKILL.md": {
+    "mtime": 1789490560.9663873,
+    "seen": 1789664719.751543,
+    "ast_hash": "b427d8500e74794b2f38e48b555c1080",
+    "semantic_hash": "b427d8500e74794b2f38e48b555c1080"
+  },
+  ".claude/skills/verify-repo-safety/reference.md": {
+    "mtime": 1789490571.6395423,
+    "seen": 1789664719.751543,
+    "ast_hash": "486360614efeb7287368e86bc3622c1b",
+    "semantic_hash": "486360614efeb7287368e86bc3622c1b"
+  },
+  "CLAUDE.md": {
+    "mtime": 1789490151.5168786,
+    "seen": 1789664719.751544,
+    "ast_hash": "a1581578f0ab4ff570b2b108e7157d20",
+    "semantic_hash": "a1581578f0ab4ff570b2b108e7157d20"
+  },
+  "README.md": {
+    "mtime": 1789639588.3274403,
+    "seen": 1789664719.7515452,
+    "ast_hash": "ba35b1cbce017eb68742a269c0c43ef5",
+    "semantic_hash": "ba35b1cbce017eb68742a269c0c43ef5"
+  },
+  "db/README.md": {
+    "mtime": 1789136756.4059198,
+    "seen": 1789664719.7515452,
+    "ast_hash": "6a8a9ca36a2070cab6df25e2ad1f923e",
+    "semantic_hash": "6a8a9ca36a2070cab6df25e2ad1f923e"
+  },
+  "dokku/DB-VIEWER.md": {
+    "mtime": 1789408261.158601,
+    "seen": 1789664719.7515461,
+    "ast_hash": "15e90e1efeb0cd58ce290f89e2aeffbd",
+    "semantic_hash": "15e90e1efeb0cd58ce290f89e2aeffbd"
+  },
+  "dokku/DEPLOY.md": {
+    "mtime": 1789141430.0432072,
+    "seen": 1789664719.7515469,
+    "ast_hash": "95efe5fadb09b8d09afeb5a8c4b30a9a",
+    "semantic_hash": "95efe5fadb09b8d09afeb5a8c4b30a9a"
+  },
+  "nanobot/AGENTS-ai-news-section.md": {
+    "mtime": 1789640385.888694,
+    "seen": 1789664719.7515469,
+    "ast_hash": "91a885a8eb019a2281a24a02331ea62e",
+    "semantic_hash": "91a885a8eb019a2281a24a02331ea62e"
+  },
+  "nanobot/AGENTS-links-section.md": {
+    "mtime": 1789461487.6171722,
+    "seen": 1789664719.7515478,
+    "ast_hash": "000dcc9258c931a7ecc7806e8f9d92e9",
+    "semantic_hash": "000dcc9258c931a7ecc7806e8f9d92e9"
+  },
+  "nanobot/DEPLOY-ai-news.md": {
+    "mtime": 1789639577.4968853,
+    "seen": 1789664719.751549,
+    "ast_hash": "ffa16d0cd2e2b6f62c6534a5da297bea",
+    "semantic_hash": "ffa16d0cd2e2b6f62c6534a5da297bea"
+  },
+  "nanobot/DEPLOY.md": {
+    "mtime": 1789136745.869963,
+    "seen": 1789664719.75155,
+    "ast_hash": "4e01fe7a35f5217388981afb772068c2",
+    "semantic_hash": "4e01fe7a35f5217388981afb772068c2"
+  }
+}
